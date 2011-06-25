@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>parse_intersection (StreetAddress::US)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File lib/street_address.rb, line 645</span>
+      <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">parse_intersection</span>(<span class="ruby-identifier">inter</span>)
+        <span class="ruby-identifier">regex</span> = <span class="ruby-constant">Regexp</span>.<span class="ruby-identifier">new</span>(
+          <span class="ruby-value str">'\A\W*'</span> <span class="ruby-operator">+</span> <span class="ruby-ivar">@@street_regexp</span> <span class="ruby-operator">+</span> <span class="ruby-value str">'\W*?
+          \s+'</span> <span class="ruby-operator">+</span> <span class="ruby-ivar">@@corner_regexp</span> <span class="ruby-operator">+</span> <span class="ruby-value str">'\s+'</span> <span class="ruby-operator">+</span>
+          <span class="ruby-ivar">@@street_regexp</span> <span class="ruby-operator">+</span> <span class="ruby-value str">'\W+'</span> <span class="ruby-operator">+</span>
+          <span class="ruby-ivar">@@place_regexp</span> <span class="ruby-operator">+</span> <span class="ruby-value str">'\W*\Z'</span>, <span class="ruby-constant">Regexp</span><span class="ruby-operator">::</span><span class="ruby-constant">IGNORECASE</span> <span class="ruby-operator">+</span> <span class="ruby-constant">Regexp</span><span class="ruby-operator">::</span><span class="ruby-constant">EXTENDED</span>)
+        <span class="ruby-identifier">match</span> = <span class="ruby-identifier">regex</span>.<span class="ruby-identifier">match</span>(<span class="ruby-identifier">inter</span>)
+        <span class="ruby-keyword kw">return</span> <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">match</span>.<span class="ruby-identifier">nil?</span>
+
+        <span class="ruby-identifier">normalize_address</span>(
+          <span class="ruby-constant">StreetAddress</span><span class="ruby-operator">::</span><span class="ruby-constant">US</span><span class="ruby-operator">::</span><span class="ruby-constant">Address</span>.<span class="ruby-identifier">new</span>(
+            <span class="ruby-identifier">:street</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">match</span>[<span class="ruby-value">4</span>] <span class="ruby-operator">||</span> <span class="ruby-identifier">match</span>[<span class="ruby-value">9</span>],
+            <span class="ruby-identifier">:street_type</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">match</span>[<span class="ruby-value">5</span>],
+            <span class="ruby-identifier">:suffix</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">match</span>[<span class="ruby-value">6</span>],
+            <span class="ruby-identifier">:prefix</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">match</span>[<span class="ruby-value">3</span>],
+            <span class="ruby-identifier">:street2</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">match</span>[<span class="ruby-value">15</span>] <span class="ruby-operator">||</span> <span class="ruby-identifier">match</span>[<span class="ruby-value">20</span>],
+            <span class="ruby-identifier">:street_type2</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">match</span>[<span class="ruby-value">16</span>],
+            <span class="ruby-identifier">:suffix2</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">match</span>[<span class="ruby-value">17</span>],
+            <span class="ruby-identifier">:prefix2</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">match</span>[<span class="ruby-value">14</span>],
+            <span class="ruby-identifier">:city</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">match</span>[<span class="ruby-value">23</span>],
+            <span class="ruby-identifier">:state</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">match</span>[<span class="ruby-value">24</span>],
+            <span class="ruby-identifier">:postal_code</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">match</span>[<span class="ruby-value">25</span>]
+          )
+        )
+      <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

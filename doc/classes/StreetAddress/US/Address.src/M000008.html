@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>to_s (StreetAddress::US::Address)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../../../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File lib/street_address.rb, line 777</span>
+      <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">to_s</span>
+        <span class="ruby-identifier">s</span> = <span class="ruby-value str">&quot;&quot;</span>
+        <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">intersection?</span>
+          <span class="ruby-identifier">s</span> <span class="ruby-operator">+=</span> <span class="ruby-identifier">prefix</span> <span class="ruby-operator">+</span> <span class="ruby-value str">&quot; &quot;</span> <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">prefix</span>.<span class="ruby-identifier">nil?</span>
+          <span class="ruby-identifier">s</span> <span class="ruby-operator">+=</span> <span class="ruby-identifier">street</span> 
+          <span class="ruby-identifier">s</span> <span class="ruby-operator">+=</span> <span class="ruby-value str">&quot; &quot;</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">street_type</span> <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">street_type</span>.<span class="ruby-identifier">nil?</span>
+          <span class="ruby-identifier">s</span> <span class="ruby-operator">+=</span> <span class="ruby-value str">&quot; &quot;</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">suffix</span> <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">suffix</span>.<span class="ruby-identifier">nil?</span>
+          <span class="ruby-identifier">s</span> <span class="ruby-operator">+=</span> <span class="ruby-value str">&quot; and&quot;</span>
+          <span class="ruby-identifier">s</span> <span class="ruby-operator">+=</span> <span class="ruby-value str">&quot; &quot;</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">prefix2</span> <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">prefix2</span>.<span class="ruby-identifier">nil?</span>
+          <span class="ruby-identifier">s</span> <span class="ruby-operator">+=</span> <span class="ruby-value str">&quot; &quot;</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">street2</span>
+          <span class="ruby-identifier">s</span> <span class="ruby-operator">+=</span> <span class="ruby-value str">&quot; &quot;</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">street_type2</span> <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">street_type2</span>.<span class="ruby-identifier">nil?</span>
+          <span class="ruby-identifier">s</span> <span class="ruby-operator">+=</span> <span class="ruby-value str">&quot; &quot;</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">suffix2</span> <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">suffix2</span>.<span class="ruby-identifier">nil?</span>
+          <span class="ruby-identifier">s</span> <span class="ruby-operator">+=</span> <span class="ruby-value str">&quot;, &quot;</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">city</span> <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">city</span>.<span class="ruby-identifier">nil?</span>
+          <span class="ruby-identifier">s</span> <span class="ruby-operator">+=</span> <span class="ruby-value str">&quot;, &quot;</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">state</span> <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">state</span>.<span class="ruby-identifier">nil?</span>
+          <span class="ruby-identifier">s</span> <span class="ruby-operator">+=</span> <span class="ruby-value str">&quot; &quot;</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">postal_code</span> <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">postal_code</span>.<span class="ruby-identifier">nil?</span>
+        <span class="ruby-keyword kw">else</span>
+          <span class="ruby-identifier">s</span> <span class="ruby-operator">+=</span> <span class="ruby-identifier">number</span>
+          <span class="ruby-identifier">s</span> <span class="ruby-operator">+=</span> <span class="ruby-value str">&quot; &quot;</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">prefix</span> <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">prefex</span>.<span class="ruby-identifier">nil?</span>
+          <span class="ruby-identifier">s</span> <span class="ruby-operator">+=</span> <span class="ruby-value str">&quot; &quot;</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">street</span> <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">street</span>.<span class="ruby-identifier">nil?</span>
+          <span class="ruby-identifier">s</span> <span class="ruby-operator">+=</span> <span class="ruby-value str">&quot; &quot;</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">street_type</span> <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">street_type</span>.<span class="ruby-identifier">nil?</span>
+          <span class="ruby-keyword kw">if</span>( <span class="ruby-operator">!</span><span class="ruby-identifier">unit_prefix</span>.<span class="ruby-identifier">nil?</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-operator">!</span><span class="ruby-identifier">unit</span>.<span class="ruby-identifier">nil?</span> )
+            <span class="ruby-identifier">s</span> <span class="ruby-operator">+=</span> <span class="ruby-value str">&quot; &quot;</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">unit_prefix</span> 
+            <span class="ruby-identifier">s</span> <span class="ruby-operator">+=</span> <span class="ruby-value str">&quot; &quot;</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">unit</span>
+          <span class="ruby-keyword kw">elsif</span>( <span class="ruby-identifier">unit_prefix</span>.<span class="ruby-identifier">nil?</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-operator">!</span><span class="ruby-identifier">unil</span>.<span class="ruby-identifier">nil?</span> )
+            <span class="ruby-identifier">s</span> <span class="ruby-operator">+=</span> <span class="ruby-value str">&quot; #&quot;</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">unit</span>
+          <span class="ruby-keyword kw">end</span>
+          <span class="ruby-identifier">s</span> <span class="ruby-operator">+=</span> <span class="ruby-value str">&quot; &quot;</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">suffix</span> <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">suffix</span>.<span class="ruby-identifier">nil?</span>
+          <span class="ruby-identifier">s</span> <span class="ruby-operator">+=</span> <span class="ruby-value str">&quot;, &quot;</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">city</span> <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">city</span>.<span class="ruby-identifier">nil?</span>
+          <span class="ruby-identifier">s</span> <span class="ruby-operator">+=</span> <span class="ruby-value str">&quot;, &quot;</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">state</span> <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">state</span>.<span class="ruby-identifier">nil?</span>
+          <span class="ruby-identifier">s</span> <span class="ruby-operator">+=</span> <span class="ruby-value str">&quot; &quot;</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">postal_code</span> <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">postal_code</span>.<span class="ruby-identifier">nil?</span>
+          <span class="ruby-identifier">s</span> <span class="ruby-operator">+=</span> <span class="ruby-value str">&quot;-&quot;</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">postal_code_ext</span> <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">postal_code_ext</span>.<span class="ruby-identifier">nil?</span>
+        <span class="ruby-keyword kw">end</span>
+        <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">s</span>
+      <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

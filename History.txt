@@ -1,0 +1,8 @@
+== 1.0.1 / 2008-02-29
+
+* BUG FIX: Parse two word states correctly
+
+== 1.0.0 / 2007-06-28
+
+* Initial Version
+
