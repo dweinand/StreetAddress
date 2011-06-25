@@ -1,117 +1,129 @@
-require 'test/unit/testcase'
+require 'test/unit'
 require File.dirname(__FILE__) + '/../lib/street_address'
 
 
-class StreetAddressUs < Test::Unit::TestCase
-  def setup
-    @addr1 = "2730 S Veitch St Apt 207, Arlington, VA 22206"
-    @addr2 = "44 Canal Center Plaza Suite 500, Alexandria, VA 22314"
-    @addr3 = "1600 Pennsylvania Ave Washington DC"
-    @addr4 = "1005 Gravenstein Hwy N, Sebastopol CA 95472"
-    @addr5 = "PO BOX 450, Chicago IL 60657"
-    @addr6 = "2730 S Veitch St #207, Arlington, VA 22206"
-
-    @int1 = "Hollywood & Vine, Los Angeles, CA"
-    @int2 = "Hollywood Blvd and Vine St, Los Angeles, CA"
-    @int3 = "Mission Street at Valencia Street, San Francisco, CA"
-
-  end
-
-  def test_parse
-    assert_equal StreetAddress::US.parse("&"), nil
-    assert_equal StreetAddress::US.parse(" and "), nil
-
-    addr = StreetAddress::US.parse(@addr1)
-    assert_equal addr.number, "2730"
-    assert_equal addr.postal_code, "22206"
-    assert_equal addr.prefix, "S"
-    assert_equal addr.state, "VA"
-    assert_equal addr.street, "Veitch"
-    assert_equal addr.street_type, "St"
-    assert_equal addr.unit, "207"
-    assert_equal addr.unit_prefix, "Apt"
-    assert_equal addr.city, "Arlington"
-    assert_equal addr.prefix2, nil
-    assert_equal addr.postal_code_ext, nil
-
-    addr = StreetAddress::US.parse(@addr2)
-    assert_equal addr.number, "44"
-    assert_equal addr.postal_code, "22314"
-    assert_equal addr.prefix, nil
-    assert_equal addr.state, "VA"
-    assert_equal addr.street, "Canal Center"
-    assert_equal addr.street_type, "Plz"
-    assert_equal addr.unit, "500"
-    assert_equal addr.unit_prefix, "Suite"
-    assert_equal addr.city, "Alexandria"
-    assert_equal addr.street2, nil
-
-    addr = StreetAddress::US.parse(@addr3)
-    assert_equal addr.number, "1600"
-    assert_equal addr.postal_code, nil
-    assert_equal addr.prefix, nil
-    assert_equal addr.state, "DC"
-    assert_equal addr.street, "Pennsylvania"
-    assert_equal addr.street_type, "Ave"
-    assert_equal addr.unit, nil
-    assert_equal addr.unit_prefix, nil
-    assert_equal addr.city, "Washington"
-    assert_equal addr.street2, nil
-
-
- 
-    addr = StreetAddress::US.parse(@addr4)
-    assert_equal addr.number, "1005"
-    assert_equal addr.postal_code, "95472"
-    assert_equal addr.prefix, nil
-    assert_equal addr.state, "CA"
-    assert_equal addr.street, "Gravenstein"
-    assert_equal addr.street_type, "Hwy"
-    assert_equal addr.unit, nil
-    assert_equal addr.unit_prefix, nil
-    assert_equal addr.city, "Sebastopol"
-    assert_equal addr.street2, nil
-    assert_equal addr.suffix, "N"
-
+class TestStreetAddressUs < Test::Unit::TestCase
   
+  def test_should_not_parse_junk
+    assert_nil StreetAddress::US.parse("&")
+    assert_nil StreetAddress::US.parse(" and ")
+  end
+  
+  def test_should_parse_apt
+    address = "2730 S Veitch St Apt 207, Arlington, VA 22206"
+    addr = StreetAddress::US.parse(address)
+    assert_equal "2730",      addr.number
+    assert_equal "22206",     addr.postal_code
+    assert_equal "S",         addr.prefix
+    assert_equal "VA",        addr.state
+    assert_equal "Veitch",    addr.street
+    assert_equal "St",        addr.street_type
+    assert_equal "207",       addr.unit
+    assert_equal "Apt",       addr.unit_prefix
+    assert_equal "Arlington", addr.city
+    assert_equal nil,         addr.prefix2
+    assert_equal nil,         addr.postal_code_ext
+  end
+  
+  def test_should_parse_unit_num
+    address = "2730 S Veitch St #207, Arlington, VA 22206"
+    addr = StreetAddress::US.parse(address)
+    assert_equal "207",       addr.unit
+  end
+  
+  def test_should_parse_suite
+    address = "44 Canal Center Plaza Suite 500, Alexandria, VA 22314"
+    addr = StreetAddress::US.parse(address)
+    assert_equal "44",           addr.number
+    assert_equal "22314",        addr.postal_code
+    assert_equal nil,            addr.prefix
+    assert_equal "VA",           addr.state
+    assert_equal "Canal Center", addr.street
+    assert_equal "Plz",          addr.street_type
+    assert_equal "500",          addr.unit
+    assert_equal "Suite",        addr.unit_prefix
+    assert_equal "Alexandria",   addr.city
+    assert_equal nil,            addr.street2
+  end
+  
+  def test_should_parse_white_house
+    address = "1600 Pennsylvania Ave Washington DC"
+    addr = StreetAddress::US.parse(address)
+    assert_equal "1600",         addr.number
+    assert_equal nil,            addr.postal_code
+    assert_equal nil,            addr.prefix
+    assert_equal "DC",           addr.state
+    assert_equal "Pennsylvania", addr.street
+    assert_equal "Ave",          addr.street_type
+    assert_equal nil,            addr.unit
+    assert_equal nil,            addr.unit_prefix
+    assert_equal "Washington",   addr.city
+    assert_equal nil,            addr.street2
+  end
+  
+  def test_should_parse_highway
+    address = "1005 Gravenstein Hwy N, Sebastopol CA 95472"
+    addr = StreetAddress::US.parse(address)
+    assert_equal "1005",        addr.number
+    assert_equal "95472",       addr.postal_code
+    assert_equal nil,           addr.prefix
+    assert_equal "CA",          addr.state
+    assert_equal "Gravenstein", addr.street
+    assert_equal "Hwy",         addr.street_type
+    assert_equal nil,           addr.unit
+    assert_equal nil,           addr.unit_prefix
+    assert_equal "Sebastopol",  addr.city
+    assert_equal nil,           addr.street2
+    assert_equal "N",           addr.suffix
+  end
+  
+  def test_should_not_parse_po_box
+    address = "PO BOX 450, Chicago IL 60657"
     addr = StreetAddress::US.parse(@addr5)
-    assert_equal addr, nil
-    
-    
-    addr = StreetAddress::US.parse(@addr6)
-    assert_equal("207", addr.unit)
-
-    addr = StreetAddress::US.parse(@int1)
-    assert_equal addr.city, "Los Angeles"
-    assert_equal addr.state, "CA"
-    assert_equal addr.street, "Hollywood"
-    assert_equal addr.street2, "Vine"
-    assert_equal addr.number, nil
-    assert_equal addr.postal_code, nil
-    assert_equal addr.intersection?, true
-
-    addr = StreetAddress::US.parse(@int2)
-    assert_equal addr.city, "Los Angeles"
-    assert_equal addr.state, "CA"
-    assert_equal addr.street, "Hollywood"
-    assert_equal addr.street2, "Vine"
-    assert_equal addr.number, nil
-    assert_equal addr.postal_code, nil
-    assert_equal addr.intersection?, true
-    assert_equal addr.street_type, "Blvd"
-    assert_equal addr.street_type2, "St"
-
-    addr = StreetAddress::US.parse(@int3)
-    assert_equal addr.city, "San Francisco"
-    assert_equal addr.state, "CA"
-    assert_equal addr.street, "Mission"
-    assert_equal addr.street2, "Valencia"
-    assert_equal addr.number, nil
-    assert_equal addr.postal_code, nil
-    assert_equal addr.intersection?, true
-    assert_equal addr.street_type, "St"
-    assert_equal addr.street_type2, "St"
-    
+    assert_nil addr
+  end
+  
+  def test_should_parse_intersection
+    intersection = "Hollywood & Vine, Los Angeles, CA"
+    addr = StreetAddress::US.parse(intersection)
+    assert_equal "Los Angeles", addr.city
+    assert_equal "CA",          addr.state
+    assert_equal "Hollywood",   addr.street
+    assert_equal "Vine",        addr.street2
+    assert_equal nil,           addr.number
+    assert_equal nil,           addr.postal_code
+    assert_equal true,          addr.intersection?
+  end
+  
+  def test_should_parse_la_intersection
+    intersection = "Hollywood Blvd and Vine St, Los Angeles, CA"
+    addr = StreetAddress::US.parse(intersection)
+    assert_equal "Los Angeles", addr.city
+    assert_equal "CA",          addr.state
+    assert_equal "Hollywood",   addr.street
+    assert_equal "Vine",        addr.street2
+    assert_equal nil,           addr.number
+    assert_equal nil,           addr.postal_code
+    assert_equal true,          addr.intersection?
+    assert_equal "Blvd",        addr.street_type
+    assert_equal "St",          addr.street_type2
+  end
+  
+  def test_should_parse_sf_intersection
+    intersection = "Mission Street at Valencia Street, San Francisco, CA"
+    addr = StreetAddress::US.parse(intersection)
+    assert_equal "San Francisco", addr.city
+    assert_equal "CA",            addr.state
+    assert_equal "Mission",       addr.street
+    assert_equal "Valencia",      addr.street2
+    assert_equal nil,             addr.number
+    assert_equal nil,             addr.postal_code
+    assert_equal true,            addr.intersection?
+    assert_equal "St",            addr.street_type
+    assert_equal "St",            addr.street_type2 
+  end
+  
+  def test_parse
     parseable = ["1600 Pennsylvania Ave Washington DC 20006", 
           "1600 Pennsylvania Ave #400, Washington, DC, 20006",
           "1600 Pennsylvania Ave Washington, DC",
