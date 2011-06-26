@@ -144,5 +144,12 @@ class TestStreetAddressUs < Test::Unit::TestCase
     end
 
   end
+  
+  def test_should_parse_ordinals
+    address = "701 First Avenue, Minneapolis, MN 55403"
+    addr    = StreetAddress::US.parse(address)
+    assert_equal '1st', addr.street
+    assert_equal 'Ave', addr.street_type
+  end
 
 end

@@ -567,6 +567,50 @@ module StreetAddress
 
     @@fips_state = @@state_fips.invert
     
+    @@ordinals = {
+      'first' => 1,
+      'one' => 1,
+      'ten' => 10,
+      'tenth' => 10,
+      'eleven' => 11,
+      'eleventh' => 11,
+      'twelfth' => 12,
+      'twelve' => 12,
+      'thirteen' => 13,
+      'thirteenth' => 13,
+      'fourteen' => 14,
+      'fourteenth' => 14,
+      'fifteen' => 15,
+      'fifteenth' => 15,
+      'sixteen' => 16,
+      'sixteenth' => 16,
+      'seventeen' => 17,
+      'seventeenth' => 17,
+      'eighteen' => 18,
+      'eighteenth' => 18,
+      'nineteen' => 19,
+      'nineteenth' => 19,
+      'second' => 2,
+      'two' => 2,
+      'twentieth' => 20,
+      'twenty' => 20,
+      'third' => 3,
+      'three' => 3,
+      'four' => 4,
+      'fourth' => 4,
+      'fifth' => 5,
+      'five' => 5,
+      'six' => 6,
+      'sixth' => 6,
+      'seven' => 7,
+      'seventh' => 7,
+      'eight' => 8,
+      'eighth' => 8,
+      'nine' => 9,
+      'ninth' => 9
+    }
+    
+    @@ordinals_regexp = @@ordinals.keys.join("|")
     @@street_type_regexp = @@street_type_list.keys.join("|")
     @@number_regexp = '\d+-?\d*'
     @@fraction_regexp = '\d+\/\d+'
@@ -715,6 +759,7 @@ module StreetAddress
         addr.prefix = normalize_directional(addr.prefix) unless addr.prefix.nil?
         addr.suffix = normalize_directional(addr.suffix) unless addr.suffix.nil?
         addr.street.gsub!(/\b([a-z])/) {|wd| wd.capitalize} unless addr.street.nil?
+        addr.street = normalize_ordinals(addr.street) unless addr.street.nil?
         addr.street_type2 = normalize_street_type(addr.street_type2) unless addr.street_type2.nil?
         addr.prefix2 = normalize_directional(addr.prefix2) unless addr.prefix2.nil?
         addr.suffix2 = normalize_directional(addr.suffix2) unless addr.suffix2.nil?
@@ -745,6 +790,41 @@ module StreetAddress
           @@directional[dir.downcase]
         end
       end
+      
+      # Convert spelled out ordinals into a numeric ordinal string
+      def normalize_ordinals(text)
+        words = text.scan(Regexp.new(@@ordinals_regexp, true))
+        return text if words.empty?
+        num = words.inject(0) {|sum, word| sum += @@ordinals[word.downcase]; sum }
+        text.sub(words.join(' '), ordinalize(num))
+      end
+      
+      
+      # Turns a number into an ordinal string used to denote the position in an
+      # ordered sequence such as 1st, 2nd, 3rd, 4th.
+      #
+      # Examples:
+      #   ordinalize(1)     # => "1st"
+      #   ordinalize(2)     # => "2nd"
+      #   ordinalize(1002)  # => "1002nd"
+      #   ordinalize(1003)  # => "1003rd"
+      #   ordinalize(-11)   # => "-11th"
+      #   ordinalize(-1021) # => "-1021st"
+      #
+      # Taken from ActiveSupport
+      def ordinalize(number)
+        if (11..13).include?(number.to_i.abs % 100)
+          "#{number}th"
+        else
+          case number.to_i.abs % 10
+            when 1; "#{number}st"
+            when 2; "#{number}nd"
+            when 3; "#{number}rd"
+            else    "#{number}th"
+          end
+        end
+      end
+      
     end
 
 =begin rdoc
