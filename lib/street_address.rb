@@ -65,7 +65,7 @@
 module StreetAddress
   VERSION = '1.0.1'
   class US
-    @@directional = {
+    Directional = {
       "north" => "N",
       "northeast" => "NE",
       "east" => "E",
@@ -75,9 +75,9 @@ module StreetAddress
       "west" => "W",
       "northwest" => "NW"
     }
-    @@direction_code = @@directional.invert
+    DirectionCode = Directional.invert
 
-    @@street_type = {
+    StreetType = {
       "allee" => "aly",
       "alley" => "aly",
       "ally" => "aly",
@@ -442,10 +442,10 @@ module StreetAddress
       "wy" => "way"
     }
   
-    @@street_type_list = {}
-    @@street_type.to_a.each{|item| @@street_type_list[item[0]] = true; @@street_type_list[item[1]] = true}
+    StreetTypeList = {}
+    StreetType.to_a.each{|item| StreetTypeList[item[0]] = true; StreetTypeList[item[1]] = true}
 
-    @@state_code = {
+    StateCode = {
       "alabama" => "AL",
       "alaska" => "AK",
       "american samoa" => "AS",
@@ -507,9 +507,9 @@ module StreetAddress
       "wyoming" => "WY"
     }
 
-    @@state_name = @@state_code.invert
+    StateName = StateCode.invert
     
-    @@state_fips = {
+    StateFips = {
       "01" => "AL",
       "02" => "AK",
       "04" => "AZ",
@@ -565,9 +565,9 @@ module StreetAddress
       "78" => "VI"
     }
 
-    @@fips_state = @@state_fips.invert
+    FipsState = StateFips.invert
     
-    @@ordinals = {
+    Ordinals = {
       'first' => 1,
       'one' => 1,
       'ten' => 10,
@@ -610,48 +610,48 @@ module StreetAddress
       'ninth' => 9
     }
     
-    @@ordinals_regexp = @@ordinals.keys.join("|")
-    @@street_type_regexp = @@street_type_list.keys.join("|")
-    @@number_regexp = '\d+-?\d*'
-    @@fraction_regexp = '\d+\/\d+'
-    @@state_regexp = @@state_code.to_a.join("|").gsub(/ /, "\\s")
-    @@direct_regexp = @@directional.keys.join("|") + "|" + @@directional.values.sort{|a,b| b.length <=> a.length }.map{|x| f = x.gsub(/(\w)/, '\1.'); [Regexp::quote(f), Regexp::quote(x)] }.join("|")
-    @@zip_regexp = '(\d{5})(?:-(\d{4}))?'
-    @@corner_regexp = '(?:\band\b|\bat\b|&|\@)'
-    @@unit_regexp = '(?:(su?i?te|p\W*[om]\W*b(?:ox)?|dept|apt|apartment|ro*m|fl|unit|box)\W+|\#\W*)([\w-]+)'
-    @@street_regexp = 
+    OrdinalsRegexp = Ordinals.keys.join("|")
+    StreetTypeRegexp = StreetTypeList.keys.join("|")
+    NumberRegexp = '\d+-?\d*'
+    FractionRegexp = '\d+\/\d+'
+    StateRegexp = StateCode.to_a.join("|").gsub(/ /, "\\s")
+    DirectRegexp = Directional.keys.join("|") + "|" + Directional.values.sort{|a,b| b.length <=> a.length }.map{|x| f = x.gsub(/(\w)/, '\1.'); [Regexp::quote(f), Regexp::quote(x)] }.join("|")
+    ZipRegexp = '(\d{5})(?:-(\d{4}))?'
+    CornerRegexp = '(?:\band\b|\bat\b|&|\@)'
+    UnitRegexp = '(?:(su?i?te|p\W*[om]\W*b(?:ox)?|dept|apt|apartment|ro*m|fl|unit|box)\W+|\#\W*)([\w-]+)'
+    StreetRegexp = 
       '(?:
-          (?:(' + @@direct_regexp + ')\W+
-          (' + @@street_type_regexp + ')\b)
+          (?:(' + DirectRegexp + ')\W+
+          (' + StreetTypeRegexp + ')\b)
           |
-          (?:(' + @@direct_regexp + ')\W+)?
+          (?:(' + DirectRegexp + ')\W+)?
           (?:
             ([^,]+)
-            (?:[^\w,]+(' + @@street_type_regexp + ')\b)
-            (?:[^\w,]+(' + @@direct_regexp + ')\b)?
+            (?:[^\w,]+(' + StreetTypeRegexp + ')\b)
+            (?:[^\w,]+(' + DirectRegexp + ')\b)?
            |
             ([^,]*\d)
-            (' + @@direct_regexp + ')\b
+            (' + DirectRegexp + ')\b
            |
             ([^,]+?)
-            (?:[^\w,]+(' + @@street_type_regexp + ')\b)?
-            (?:[^\w,]+(' + @@direct_regexp + ')\b)?
+            (?:[^\w,]+(' + StreetTypeRegexp + ')\b)?
+            (?:[^\w,]+(' + DirectRegexp + ')\b)?
           )
         )'
-    @@place_regexp = 
+    PlaceRegexp = 
       '(?:
        ([^\d,]+?)\W+
-       ($' + @@state_regexp + ')\W*
+       ($' + StateRegexp + ')\W*
        )?
-       (?:' + @@zip_regexp + ')?'
+       (?:' + ZipRegexp + ')?'
     
-    @@address_regexp =
+    AddressRegexp =
       '\A\W*
-        (' + @@number_regexp + ')\W*
-        (?:' + @@fraction_regexp + '\W*)?' +
-        @@street_regexp + '\W+
-        (?:' + @@unit_regexp + '\W+)?' +
-        @@place_regexp +
+        (' + NumberRegexp + ')\W*
+        (?:' + FractionRegexp + '\W*)?' +
+        StreetRegexp + '\W+
+        (?:' + UnitRegexp + '\W+)?' +
+        PlaceRegexp +
       '\W*\Z'
       
     class << self
@@ -667,7 +667,7 @@ module StreetAddress
     
 =end
       def parse(location)
-        regex = Regexp.new(@@corner_regexp, Regexp::IGNORECASE)
+        regex = Regexp.new(CornerRegexp, Regexp::IGNORECASE)
         if  regex.match(location)
           z = regex.match(location)
           parse_intersection(location);
@@ -688,28 +688,27 @@ module StreetAddress
 =end
       def parse_intersection(inter)
         regex = Regexp.new(
-          '\A\W*' + @@street_regexp + '\W*?
-          \s+' + @@corner_regexp + '\s+' +
-          @@street_regexp + '\W+' +
-          @@place_regexp + '\W*\Z', Regexp::IGNORECASE + Regexp::EXTENDED)
+          '\A\W*' + StreetRegexp + '\W*?
+          \s+' + CornerRegexp + '\s+' +
+          StreetRegexp + '\W+' +
+          PlaceRegexp + '\W*\Z', Regexp::IGNORECASE + Regexp::EXTENDED)
         match = regex.match(inter)
         return if match.nil?
 
-        normalize_address(
-          StreetAddress::US::Address.new(
-            :street => match[4] || match[9],
-            :street_type => match[5],
-            :suffix => match[6],
-            :prefix => match[3],
-            :street2 => match[15] || match[20],
-            :street_type2 => match[16],
-            :suffix2 => match[17],
-            :prefix2 => match[14],
-            :city => match[23],
-            :state => match[24],
-            :postal_code => match[25]
-          )
+        StreetAddress::US::Address.new(
+          :street => match[4] || match[9],
+          :street_type => match[5],
+          :suffix => match[6],
+          :prefix => match[3],
+          :street2 => match[15] || match[20],
+          :street_type2 => match[16],
+          :suffix2 => match[17],
+          :prefix2 => match[14],
+          :city => match[23],
+          :state => match[24],
+          :postal_code => match[25]
         )
+
       end
       
 =begin rdoc
@@ -723,106 +722,23 @@ module StreetAddress
 
 =end
       def parse_address(addr)
-         regex = Regexp.new(@@address_regexp, Regexp::IGNORECASE + Regexp::EXTENDED)
-         match = regex.match(addr)
-         return if match.nil?
+        regex = Regexp.new(AddressRegexp, Regexp::IGNORECASE + Regexp::EXTENDED)
+        match = regex.match(addr)
+        return if match.nil?
 
-         normalize_address(
-           StreetAddress::US::Address.new(
-           :number => match[1],
-           :street => match[5] || match[10] || match[2],
-           :street_type => match[6] || match[3],
-           :unit => match[14],
-           :unit_prefix => match[13],
-           :suffix => match[7] || match[12],
-           :prefix => match[4],
-           :city => match[15],
-           :state => match[16],
-           :postal_code => match[17],
-           :postal_code_ext => match[18]
-           )
+        StreetAddress::US::Address.new(
+          :number => match[1],
+          :street => match[5] || match[10] || match[2],
+          :street_type => match[6] || match[3],
+          :unit => match[14],
+          :unit_prefix => match[13],
+          :suffix => match[7] || match[12],
+          :prefix => match[4],
+          :city => match[15],
+          :state => match[16],
+          :postal_code => match[17],
+          :postal_code_ext => match[18]
         )
-      end
-      
-      def state_name #:nodoc:
-        @@state_name
-      end
-      
-      def fips_state #:nodoc:
-        @@fips_state
-      end
-      
-      private
-      def normalize_address(addr)
-        addr.state = normalize_state(addr.state) unless addr.state.nil?
-        addr.street_type = normalize_street_type(addr.street_type) unless addr.street_type.nil?
-        addr.prefix = normalize_directional(addr.prefix) unless addr.prefix.nil?
-        addr.suffix = normalize_directional(addr.suffix) unless addr.suffix.nil?
-        addr.street.gsub!(/\b([a-z])/) {|wd| wd.capitalize} unless addr.street.nil?
-        addr.street = normalize_ordinals(addr.street) unless addr.street.nil?
-        addr.street_type2 = normalize_street_type(addr.street_type2) unless addr.street_type2.nil?
-        addr.prefix2 = normalize_directional(addr.prefix2) unless addr.prefix2.nil?
-        addr.suffix2 = normalize_directional(addr.suffix2) unless addr.suffix2.nil?
-        addr.street2.gsub!(/\b([a-z])/) {|wd| wd.capitalize} unless addr.street2.nil?
-        addr.city.gsub!(/\b([a-z])/) {|wd| wd.capitalize} unless addr.city.nil?
-        addr.unit_prefix.capitalize! unless addr.unit_prefix.nil?
-        return addr
-      end
-      
-      def normalize_state(state)
-        if state.length < 3
-          state.upcase
-        else
-          @@state_code[state.downcase]
-        end
-      end
-      
-      def normalize_street_type(s_type)
-        s_type.downcase!
-        s_type = @@street_type[s_type] || s_type if @@street_type_list[s_type]
-        s_type.capitalize
-      end
-      
-      def normalize_directional(dir)
-        if dir.length < 3
-          dir.upcase
-        else
-          @@directional[dir.downcase]
-        end
-      end
-      
-      # Convert spelled out ordinals into a numeric ordinal string
-      def normalize_ordinals(text)
-        words = text.scan(Regexp.new(@@ordinals_regexp, true))
-        return text if words.empty?
-        num = words.inject(0) {|sum, word| sum += @@ordinals[word.downcase]; sum }
-        text.sub(words.join(' '), ordinalize(num))
-      end
-      
-      
-      # Turns a number into an ordinal string used to denote the position in an
-      # ordered sequence such as 1st, 2nd, 3rd, 4th.
-      #
-      # Examples:
-      #   ordinalize(1)     # => "1st"
-      #   ordinalize(2)     # => "2nd"
-      #   ordinalize(1002)  # => "1002nd"
-      #   ordinalize(1003)  # => "1003rd"
-      #   ordinalize(-11)   # => "-11th"
-      #   ordinalize(-1021) # => "-1021st"
-      #
-      # Taken from ActiveSupport
-      def ordinalize(number)
-        if (11..13).include?(number.to_i.abs % 100)
-          "#{number}th"
-        else
-          case number.to_i.abs % 10
-            when 1; "#{number}st"
-            when 2; "#{number}nd"
-            when 3; "#{number}rd"
-            else    "#{number}th"
-          end
-        end
       end
       
     end
@@ -835,19 +751,23 @@ module StreetAddress
   
 =end
     class Address
-      attr_accessor :number, :street, :street_type, :unit, :unit_prefix, :suffix, :prefix, :city, :state, :postal_code, :postal_code_ext, :street2, :street_type2, :suffix2, :prefix2
+      attr_accessor :number, :street, :street_type, :unit, :unit_prefix,
+                    :suffix, :prefix, :city, :state, :postal_code,
+                    :postal_code_ext, :street2, :street_type2, :suffix2,
+                    :prefix2
 
       def initialize(args)
         args.keys.each { |attrib| self.send("#{attrib}=", args[attrib]) }
+        normalize!
       end
 
       def state_fips
-        StreetAddress::US::fips_state[@state]
+        FipsState[state]
       end
 
       def state_name
-        s_name = StreetAddress::US.state_name[state]     
-        s_name.capitalize unless s_name.nil?
+        s_name = StateName[state]
+        s_name.capitalize if s_name
       end
 
       def intersection?
@@ -888,6 +808,93 @@ module StreetAddress
         end
         return s
       end  
+      
+      def normalize!
+        normalize_state
+        normalize_street_types
+        normalize_directionals
+        normalize_ordinals
+        normalize_capitalization
+      end
+      
+      private
+      
+      def normalize_state
+        return unless state
+        if state.size < 3
+          state.upcase!
+        else
+          self.state = StateCode[state.downcase]
+        end
+      end
+      
+      def normalize_street_types
+        self.street_type = normalize_street_type(street_type)
+        self.street_type2 = normalize_street_type(street_type2)
+      end
+      
+      def normalize_street_type(str_type)
+        return unless str_type
+        str_type.downcase!
+        str_type = StreetType[str_type].dup if StreetType[str_type]
+        str_type.capitalize!
+      end
+      
+      def normalize_directionals
+        self.prefix = normalize_directional(prefix)
+        self.suffix = normalize_directional(suffix)
+        self.prefix2 = normalize_directional(prefix2)
+        self.suffix2 = normalize_directional(suffix2)
+      end
+      
+      def normalize_directional(dir)
+        return unless dir
+        if dir.length < 3
+          dir.upcase
+        else
+          Directional[dir.downcase]
+        end
+      end
+      
+      def normalize_ordinals
+        words = street.scan(Regexp.new(OrdinalsRegexp, true))
+        return if words.empty?
+        num = words.inject(0) {|sum, wd| sum += Ordinals[wd.downcase]; sum }
+        street.sub!(words.join(' '), ordinalize(num))
+      end
+      
+      def normalize_capitalization
+        street.gsub!(/\b([a-z])/) {|wd| wd.capitalize} if street
+        street2.gsub!(/\b([a-z])/) {|wd| wd.capitalize} if street2
+        city.gsub!(/\b([a-z])/) {|wd| wd.capitalize } if city
+        unit_prefix.capitalize! if unit_prefix
+      end
+      
+      # Turns a number into an ordinal string used to denote the position in an
+      # ordered sequence such as 1st, 2nd, 3rd, 4th.
+      #
+      # Examples:
+      #   ordinalize(1)     # => "1st"
+      #   ordinalize(2)     # => "2nd"
+      #   ordinalize(1002)  # => "1002nd"
+      #   ordinalize(1003)  # => "1003rd"
+      #   ordinalize(-11)   # => "-11th"
+      #   ordinalize(-1021) # => "-1021st"
+      #
+      # Taken from ActiveSupport
+      def ordinalize(number)
+        if (11..13).include?(number.to_i.abs % 100)
+          "#{number}th"
+        else
+          case number.to_i.abs % 10
+            when 1; "#{number}st"
+            when 2; "#{number}nd"
+            when 3; "#{number}rd"
+            else    "#{number}th"
+          end
+        end
+      end
+      
     end
   end
 end
