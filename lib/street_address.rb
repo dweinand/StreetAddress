@@ -773,40 +773,45 @@ module StreetAddress
       def intersection?
         !street2.nil?
       end
+      
+      def street_address
+        [prefix,street,street_type,suffix].compact.join(' ')
+      end
+      
+      def street_address2
+        [prefix2,street2,street_type2,suffix2].compact.join(' ')
+      end
+      
+      def house_address
+        [
+          number,
+          street_address,
+          (unit_prefix || '#' if unit),
+          unit
+        ].compact.join(' ')
+      end
+      
+      def city_state_postal_code
+        [
+          ("#{city}," if city),
+          state, postal_code, postal_code_ext
+        ].compact.join(' ')
+      end
 
       def to_s
-        s = ""
         if intersection?
-          s += prefix + " " unless prefix.nil?
-          s += street 
-          s += " " + street_type unless street_type.nil?
-          s += " " + suffix unless suffix.nil?
-          s += " and"
-          s += " " + prefix2 unless prefix2.nil?
-          s += " " + street2
-          s += " " + street_type2 unless street_type2.nil?
-          s += " " + suffix2 unless suffix2.nil?
-          s += ", " + city unless city.nil?
-          s += ", " + state unless state.nil?
-          s += " " + postal_code unless postal_code.nil?
+          [
+            street_address,
+            'and',
+            ("#{street_address2}," if street_address2),
+            city_state_postal_code
+          ].compact.join(' ')
         else
-          s += number
-          s += " " + prefix unless prefix.nil?
-          s += " " + street unless street.nil?
-          s += " " + street_type unless street_type.nil?
-          if( !unit_prefix.nil? && !unit.nil? )
-            s += " " + unit_prefix 
-            s += " " + unit
-          elsif( unit_prefix.nil? && !unit.nil? )
-            s += " #" + unit
-          end
-          s += " " + suffix unless suffix.nil?
-          s += ", " + city unless city.nil?
-          s += ", " + state unless state.nil?
-          s += " " + postal_code unless postal_code.nil?
-          s += "-" + postal_code_ext unless postal_code_ext.nil?
+          [
+            house_address,
+            city_state_postal_code
+          ].compact.join(', ')
         end
-        return s
       end  
       
       def normalize!

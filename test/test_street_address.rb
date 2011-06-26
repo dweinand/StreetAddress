@@ -160,5 +160,42 @@ class TestStreetAddressUs < Test::Unit::TestCase
     assert_equal '1st', addr.street
     assert_equal 'Ave', addr.street_type
   end
-
+  
+  def test_should_have_street_address
+    address = "701 First Avenue, Minneapolis, MN 55403"
+    addr    = StreetAddress::US.parse(address)
+    assert_equal '1st Ave', addr.street_address
+  end
+  
+  def test_should_have_house_address
+    address = "701 First Avenue, Minneapolis, MN 55403"
+    addr    = StreetAddress::US.parse(address)
+    assert_equal '701 1st Ave', addr.house_address
+  end
+  
+  def test_should_have_house_number_for_suite
+    address = "44 Canal Center Plaza Suite 500, Alexandria, VA 22314"
+    addr = StreetAddress::US.parse(address)
+    assert_equal '44 Canal Center Plz Suite 500', addr.house_address
+  end
+  
+  def test_should_have_street_addresses_on_intersection
+    address = "First Avenue and Seventh Street, Minneapolis, MN 55403"
+    addr    = StreetAddress::US.parse(address)
+    assert_equal "1st Ave", addr.street_address
+    assert_equal "7th St", addr.street_address2
+  end
+  
+  def test_should_have_to_s
+    address = "701 First Avenue, Minneapolis, MN 55403"
+    addr    = StreetAddress::US.parse(address)
+    assert_equal '701 1st Ave, Minneapolis, MN 55403', addr.to_s
+  end
+  
+  def test_should_have_to_s_on_intersection
+    address = "First Avenue and Seventh Street, Minneapolis, MN 55403"
+    addr    = StreetAddress::US.parse(address)
+    assert_equal "1st Ave and 7th St, Minneapolis, MN 55403", addr.to_s
+  end
+  
 end
