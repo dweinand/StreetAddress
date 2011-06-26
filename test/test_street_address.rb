@@ -151,5 +151,14 @@ class TestStreetAddressUs < Test::Unit::TestCase
     assert_equal '1st', addr.street
     assert_equal 'Ave', addr.street_type
   end
+  
+  def test_should_parse_ordinals_on_intersection
+    address = "First Avenue and Seventh Street, Minneapolis, MN 55403"
+    addr    = StreetAddress::US.parse(address)
+    assert_equal '7th', addr.street2
+    assert_equal 'St', addr.street_type2
+    assert_equal '1st', addr.street
+    assert_equal 'Ave', addr.street_type
+  end
 
 end

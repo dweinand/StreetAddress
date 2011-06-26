@@ -568,49 +568,49 @@ module StreetAddress
     FipsState = StateFips.invert
     
     Ordinals = {
-      'first' => 1,
-      'one' => 1,
-      'ten' => 10,
-      'tenth' => 10,
-      'eleven' => 11,
-      'eleventh' => 11,
-      'twelfth' => 12,
-      'twelve' => 12,
-      'thirteen' => 13,
-      'thirteenth' => 13,
-      'fourteen' => 14,
-      'fourteenth' => 14,
-      'fifteen' => 15,
-      'fifteenth' => 15,
-      'sixteen' => 16,
-      'sixteenth' => 16,
-      'seventeen' => 17,
+      'first'       => 1,
+      'one'         => 1,
+      'ten'         => 10,
+      'tenth'       => 10,
+      'eleventh'    => 11,
+      'eleven'      => 11,
+      'twelfth'     => 12,
+      'twelve'      => 12,
+      'thirteenth'  => 13,
+      'thirteen'    => 13,
+      'fourteenth'  => 14,
+      'fourteen'    => 14,
+      'fifteenth'   => 15,
+      'fifteen'     => 15,
+      'sixteenth'   => 16,
+      'sixteen'     => 16,
       'seventeenth' => 17,
-      'eighteen' => 18,
-      'eighteenth' => 18,
-      'nineteen' => 19,
-      'nineteenth' => 19,
-      'second' => 2,
-      'two' => 2,
-      'twentieth' => 20,
-      'twenty' => 20,
-      'third' => 3,
-      'three' => 3,
-      'four' => 4,
-      'fourth' => 4,
-      'fifth' => 5,
-      'five' => 5,
-      'six' => 6,
-      'sixth' => 6,
-      'seven' => 7,
-      'seventh' => 7,
-      'eight' => 8,
-      'eighth' => 8,
-      'nine' => 9,
-      'ninth' => 9
+      'seventeen'   => 17,
+      'eighteenth'  => 18,
+      'eighteen'    => 18,
+      'nineteenth'  => 19,
+      'nineteen'    => 19,
+      'second'      => 2,
+      'two'         => 2,
+      'twentieth'   => 20,
+      'twenty'      => 20,
+      'third'       => 3,
+      'three'       => 3,
+      'fourth'      => 4,
+      'four'        => 4,
+      'fifth'       => 5,
+      'five'        => 5,
+      'sixth'       => 6,
+      'six'         => 6,
+      'seventh'     => 7,
+      'seven'       => 7,
+      'eighth'      => 8,
+      'eight'       => 8,
+      'ninth'       => 9,
+      'nine'        => 9
     }
     
-    OrdinalsRegexp = Ordinals.keys.join("|")
+    OrdinalsRegexp = Ordinals.keys.join('\b|')
     StreetTypeRegexp = StreetTypeList.keys.join("|")
     NumberRegexp = '\d+-?\d*'
     FractionRegexp = '\d+\/\d+'
@@ -857,10 +857,16 @@ module StreetAddress
       end
       
       def normalize_ordinals
-        words = street.scan(Regexp.new(OrdinalsRegexp, true))
-        return if words.empty?
+        self.street = normalize_ordinal(street)
+        self.street2 = normalize_ordinal(street2)
+      end
+      
+      def normalize_ordinal(str)
+        return unless str
+        words = str.scan(Regexp.new(OrdinalsRegexp, true))
+        return str if words.empty?
         num = words.inject(0) {|sum, wd| sum += Ordinals[wd.downcase]; sum }
-        street.sub!(words.join(' '), ordinalize(num))
+        str.sub(words.join(' '), ordinalize(num))
       end
       
       def normalize_capitalization
