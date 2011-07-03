@@ -774,18 +774,18 @@ module StreetAddress
         !street2.nil?
       end
       
-      def street_address
+      def street_name
         [prefix,street,street_type,suffix].compact.join(' ')
       end
       
-      def street_address2
+      def street_name2
         [prefix2,street2,street_type2,suffix2].compact.join(' ')
       end
       
-      def house_address
+      def street_address
         [
           number,
-          street_address,
+          street_name,
           (unit_prefix || '#' if unit),
           unit
         ].compact.join(' ')
@@ -801,14 +801,14 @@ module StreetAddress
       def to_s
         if intersection?
           [
-            street_address,
+            street_name,
             'and',
-            ("#{street_address2}," if street_address2),
+            ("#{street_name2}," if street_name2),
             city_state_postal_code
           ].compact.join(' ')
         else
           [
-            house_address,
+            street_address,
             city_state_postal_code
           ].compact.join(', ')
         end
