@@ -18,7 +18,7 @@ http://search.cpan.org/~sderle/Geo-StreetAddress-US-0.99/"
   
   p.rubyforge_project = 'streetaddress'
   
-  s.files         = `git ls-files`.split("\n")
-  s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
-  s.require_paths = ["lib"]
+  p.files         = `git ls-files`.split("\n")
+  p.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
+  p.require_paths = ["lib"]
 end
